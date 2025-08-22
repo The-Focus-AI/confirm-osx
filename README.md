@@ -11,45 +11,32 @@ A Swift command line utility that displays native macOS confirmation dialogs wit
 - 🔄 **Exit Codes**: Returns proper exit codes for scripting
 - 🍎 **Native macOS**: Uses native Cocoa APIs for authentic look and feel
 
-## Installation
+## Requirements
 
-### Quick Build
-```bash
-make
-```
-
-### Manual Build
-```bash
-swiftc confirm.swift -o confirm
-```
-
-### Install System-wide (Optional)
-```bash
-make install
-```
-
-This installs to `/usr/local/bin/confirm` (requires sudo).
+- macOS 10.14 or later
+- Xcode Command Line Tools (`xcode-select --install`)
+- Swift 5.0 or later
 
 ## Usage
 
 ### Basic Confirmation
 ```bash
-./confirm "Do you want to proceed?"
+swift confirm.swift "Do you want to proceed?"
 ```
 
 ### With Authentication
 ```bash
-./confirm --auth "Delete important files?"
+swift confirm.swift --auth "Delete important files?"
 ```
 
 ### With Custom Icon
 ```bash
-./confirm --icon /path/to/icon.png "Custom dialog"
+swift confirm.swift --icon /path/to/icon.png "Custom dialog"
 ```
 
 ### Full Example
 ```bash
-./confirm --auth --icon /Applications/Trash.app/Contents/Resources/FullTrashIcon.icns "Empty trash permanently?"
+swift confirm.swift --auth --icon /Applications/Trash.app/Contents/Resources/FullTrashIcon.icns "Empty trash permanently?"
 ```
 
 ## Command Line Options
@@ -71,7 +58,7 @@ This installs to `/usr/local/bin/confirm` (requires sudo).
 ```bash
 #!/bin/bash
 
-if ./confirm "Delete all log files?"; then
+if swift confirm.swift "Delete all log files?"; then
     echo "Deleting log files..."
     rm -f /var/log/*.log
     echo "Done!"
@@ -84,7 +71,7 @@ fi
 ```bash
 #!/bin/bash
 
-if ./confirm --auth "Install system update?"; then
+if swift confirm.swift --auth "Install system update?"; then
     echo "Installing update..."
     sudo softwareupdate -i -a
 else
@@ -101,7 +88,7 @@ confirm_dangerous() {
     local message="$1"
     local icon="${2:-/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/AlertStopIcon.icns}"
     
-    ./confirm --auth --icon "$icon" "$message"
+    swift confirm.swift --auth --icon "$icon" "$message"
 }
 
 # Usage
@@ -149,7 +136,7 @@ Common system icon locations:
 ```bash
 #!/bin/bash
 # pre-push hook
-if ./confirm "Push to production branch?"; then
+if swift confirm.swift "Push to production branch?"; then
     exit 0
 else
     echo "Push cancelled by user"
@@ -163,7 +150,7 @@ fi
 ENVIRONMENT="${1:-staging}"
 
 if [[ "$ENVIRONMENT" == "production" ]]; then
-    if ! ./confirm --auth "Deploy to PRODUCTION?"; then
+    if ! swift confirm.swift --auth "Deploy to PRODUCTION?"; then
         echo "Deployment cancelled"
         exit 1
     fi
@@ -177,7 +164,7 @@ echo "Deploying to $ENVIRONMENT..."
 #!/bin/bash
 # Weekly maintenance script
 
-if ./confirm --icon /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/ToolbarInfo.icns "Run weekly maintenance tasks?"; then
+if swift confirm.swift --icon /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/ToolbarInfo.icns "Run weekly maintenance tasks?"; then
     echo "Running maintenance..."
     
     # Clean caches
@@ -188,41 +175,6 @@ if ./confirm --icon /System/Library/CoreServices/CoreTypes.bundle/Contents/Resou
     
     echo "Maintenance complete!"
 fi
-```
-
-## Building from Source
-
-### Requirements
-- macOS 10.14 or later
-- Xcode Command Line Tools (`xcode-select --install`)
-- Swift 5.0 or later
-
-### Build Process
-```bash
-# Clone or download the source
-# Build the executable
-make
-
-# Test the build
-./confirm "Test message"
-
-# Install system-wide (optional)
-sudo make install
-
-# Clean build artifacts
-make clean
-```
-
-### Development
-```bash
-# Build with debug symbols
-make debug
-
-# Run tests
-make test
-
-# Create distribution package
-make package
 ```
 
 ## Troubleshooting
@@ -237,13 +189,13 @@ make package
 - Ensure the app has permission to use Touch ID
 - Try running with `--auth` flag to test authentication
 
-### Permission Errors
+### Swift Not Found
 ```bash
-# If you get permission errors:
-chmod +x confirm
+# Install Xcode Command Line Tools if Swift is not found:
+xcode-select --install
 
-# For system-wide installation:
-sudo make install
+# Verify Swift installation:
+swift --version
 ```
 
 ### Icon Not Loading
